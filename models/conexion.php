@@ -1,11 +1,18 @@
 <?php
 
   function connection(){
-    $connection = new mysqli('localhost', 'root', '', 'luiscoin');
+    try {
 
-    if ($connection->connect_errno) {
-      printf("Conexión fallida: %s\n", $connection->connect_error);
-      exit();
+      $connection = new PDO(
+          'mysql:host=localhost;dbname=luiscoin',
+          'root',
+          '',
+          array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8")
+      );
+
+      } catch (PDOException $e) {
+        echo $e->getMessage();
     }
+
     return $connection;
   }

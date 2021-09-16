@@ -4,24 +4,28 @@
 
   function mdlGiveUser($item,$value){
     
-    $connection =  conecction();
+    $connection =  connection();
 
     if($item != null){
-      $consultShowUser = "SELECT nick, email, pass FROM user WHERE $item = ?";
 
-      $result = $connection->prepare($consultShowUser);
-      $result -> bind_param("s",$value);
-      $result -> bind_result($nick,$email,$pass);
-      $result -> execute();
-      $result -> store_result();
-      if(!$result){
-        $error = $connection->error();
-        var_dump($error);
+      $consultShowUser = $connection->prepare("SELECT * FROM user WHERE $item = ?");
+
+      $consultShowUser->setFetchMode(PDO::FETCH_ASSOC);
+
+      $consultShowUser->bindParam(1, $value);
+
+      $consultShowUser->execute();
+
+      $numFilas=$consultShowUser->rowCount();
+
+      if($numFilas>0){
+
+        $fila=$consultShowUser->fetch();
+
+        return $fila;
+
       }else{
-
-        $arrayFetch = fetch();
-        
-        return $arrayFetch;
+        return false;
       }
     }
   }
